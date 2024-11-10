@@ -23,7 +23,7 @@ export class LoginComponent {
 
   signIn(){
     this.isLoading = true;
-    this.http.post<LoginResponseModel>("Auth/Login",this.model,(res)=> {
+    this.http.post<LoginResponseModel>("/Auth/Login",this.model,(res)=> {
       localStorage.setItem("token", res.token);
       this.router.navigateByUrl("/");
     },()=> this.isLoading = false);

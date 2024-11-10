@@ -7,49 +7,64 @@ using TS.Result;
 
 namespace eAccountingServer.Application.Features.Auth.Login
 {
-    internal sealed class LoginCommandHandler(
-        UserManager<AppUser> userManager,
-        SignInManager<AppUser> signInManager,
-        IJwtProvider jwtProvider) : IRequestHandler<LoginCommand, Result<LoginCommandResponse>>
+    internal sealed class LoginCommandHandler : IRequestHandler<LoginCommand, Result<LoginCommandResponse>>
     {
+        private readonly UserManager<AppUser> userManager;
+        private readonly SignInManager<AppUser> signInManager;
+        private readonly IJwtProvider jwtProvider;
+
+        public LoginCommandHandler(
+            UserManager<AppUser> userManager,
+            SignInManager<AppUser> signInManager,
+            IJwtProvider jwtProvider)
+        {
+            this.userManager = userManager;
+            this.signInManager = signInManager;
+            this.jwtProvider = jwtProvider;
+        }
+
         public async Task<Result<LoginCommandResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
-            AppUser? user = await userManager.Users
+            // Attempt to find user by email or username
+            var user = await userManager.Users
                 .FirstOrDefaultAsync(p =>
-                p.UserName == request.EmailOrUserName ||
-                p.Email == request.EmailOrUserName,
-                cancellationToken);
+                    p.UserName == request.EmailOrUserName ||
+                    p.Email == request.EmailOrUserName,
+                    cancellationToken);
 
-            if (user is null)
-            {
-                return (500, "Kullanıcı bulunamadı");
-            }
+            if (user == null)
+                return Result<LoginCommandResponse>.Failure("User not found");
 
-            SignInResult signInResult = await signInManager.CheckPasswordSignInAsync(user, request.Password, true);
+            // Check sign-in credentials
+            var signInResult = await signInManager.CheckPasswordSignInAsync(user, request.Password, true);
 
+            // Account is locked out after multiple failed login attempts
             if (signInResult.IsLockedOut)
             {
-                TimeSpan? timeSpan = user.LockoutEnd - DateTime.UtcNow;
-                if (timeSpan is not null)
-                    return (500, $"Şifrenizi 3 defa yanlış girdiğiniz için kullanıcı {Math.Ceiling(timeSpan.Value.TotalMinutes)} dakika süreyle bloke edilmiştir");
+                var timeSpan = user.LockoutEnd - DateTime.UtcNow;
+                if (timeSpan.HasValue)
+                {
+                    return Result<LoginCommandResponse>.Failure(
+                        $"Your account has been locked for {Math.Ceiling(timeSpan.Value.TotalMinutes)} minutes due to multiple failed login attempts");
+                }
                 else
-                    return (500, "Kullanıcınız 3 kez yanlış şifre girdiği için 5 dakika süreyle bloke edilmiştir");
+                {
+                    return Result<LoginCommandResponse>.Failure("Your account has been locked for 5 minutes due to multiple failed login attempts");
+                }
             }
 
+            // Account is not allowed to log in (e.g., email is not confirmed)
             if (signInResult.IsNotAllowed)
-            {
-                return (500, "Mail adresiniz onaylı değil");
-            }
+                return Result<LoginCommandResponse>.Failure("Your email address is not verified");
 
+            // Invalid password
             if (!signInResult.Succeeded)
-            {
-                return (500, "Şifreniz yanlış");
-            }
+                return Result<LoginCommandResponse>.Failure("Invalid password");
 
+            // Generate JWT token for successful login
             var loginResponse = await jwtProvider.CreateToken(user);
 
-
-            return loginResponse;
+            return Result<LoginCommandResponse>.Succeed(loginResponse);
         }
     }
 }
