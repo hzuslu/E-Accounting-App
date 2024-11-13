@@ -1,34 +1,61 @@
-<body class="hold-transition login-page">
-    <div class="login-box">
-        <div class="card card-outline card-dark">
+<body class="hold-transition login-page" style="background: #f0f2f5;">
+    <div class="login-box" style="width: 360px;">
+        <div class="card card-outline card-primary shadow-lg rounded-lg">
             <div class="card-header text-center">
-                <a class="h1"><b>TS </b>ERP</a>
+                <a class="h1 font-weight-bold text-primary" style="font-size: 2rem; letter-spacing: 1px;">E-Accounting</a>
             </div>
             <div class="card-body">
-                <p class="login-box-msg">Giriş yapmak için bilgilerinizi doldurun</p>
+                <p class="login-box-msg text-muted">Welcome back! Please log in to continue</p>
 
                 <div class="input-group mb-3">
-                    <input [(ngModel)]="model.emailOrUserName" type="email" class="form-control" placeholder="Email">
+                    <input [(ngModel)]="model.emailOrUserName" type="email" class="form-control" placeholder="Email or Username" style="border-right: none;">
                     <div class="input-group-append">
-                        <div class="input-group-text">
+                        <div class="input-group-text bg-primary text-white" style="border-left: none;">
                             <span class="fas fa-envelope"></span>
                         </div>
                     </div>
                 </div>
+
                 <div class="input-group mb-3">
-                    <input [(ngModel)]="model.password" type="password" class="form-control" placeholder="Password">
+                    <input [(ngModel)]="model.password" type="password" class="form-control" placeholder="Password" style="border-right: none;">
                     <div class="input-group-append">
-                        <div class="input-group-text">
+                        <div class="input-group-text bg-primary text-white" style="border-left: none;">
                             <span class="fas fa-lock"></span>
                         </div>
                     </div>
                 </div>
 
-                <button (click)="signIn()" class="btn btn-dark btn-block">
-                    <i class="fa-solid fa-lock me-1"></i>
-                    Giriş Yap
+                <button (click)="signIn()" class="btn btn-primary btn-block font-weight-bold" style="padding: 10px; font-size: 1.1rem;">
+                    <i class="fas fa-sign-in-alt mr-1"></i> Sign In
                 </button>
+
+                <div class="text-right mt-2">
+                    <a data-toggle="modal" data-target="#sendConfirmEmailModal"  href="#" class="text-primary font-weight-bold" style="font-size: 0.9rem;">Resend confirmation email</a>
+                </div>
             </div>
         </div>
     </div>
 </body>
+
+
+<div class="modal fade" id="sendConfirmEmailModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title font-weight-bold text-primary">Resend Confirmation Email</h5>
+                <button type="button" #sendConfirmEmailModalCloseBtn class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-form-label">Email:</label>
+                        <input type="email" id="email" class="form-control" [(ngModel)]="email" placeholder="Enter your email" required>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="sendConfirmEmail()">Send Confirmation Email</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using eAccountingServer.Domain.Entities;
+using eAccountingServer.Domain.Events;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using TS.Result;
 namespace eAccountingServer.Application.Features.Users.CreateUser
 {
     internal sealed class CreateUserCommandHandler(
+        IMediator mediatr,
         UserManager<AppUser> userManager,
         IMapper mapper) : IRequestHandler<CreateUserCommand, Result<string>>
     {
@@ -27,8 +29,7 @@ namespace eAccountingServer.Application.Features.Users.CreateUser
             if (!identityResult.Succeeded)
                 return Result<string>.Failure(identityResult.Errors.Select(s => s.Description).ToList());
 
-            //onay maili gönderme kodu
-
+            await mediatr.Publish(new AppUserEvent(appUser.Id));
             return "User created successfully";
 
         }
