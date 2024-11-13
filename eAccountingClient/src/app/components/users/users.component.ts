@@ -15,32 +15,32 @@ import { NgForm } from '@angular/forms';
 })
 export class UsersComponent {
   users: UserModel[] = [];
-  search: string = "";
+  search:string = "";
 
   @ViewChild("createModalCloseBtn") createModalCloseBtn: ElementRef<HTMLButtonElement> | undefined;
   @ViewChild("updateModalCloseBtn") updateModalCloseBtn: ElementRef<HTMLButtonElement> | undefined;
 
-  createModel: UserModel = new UserModel();
-  updateModel: UserModel = new UserModel();
+  createModel:UserModel = new UserModel();
+  updateModel:UserModel = new UserModel();
 
   constructor(
     private http: HttpService,
     private swal: SwalService
-  ) { }
+  ){}
 
   ngOnInit(): void {
     this.getAll();
   }
 
-  getAll() {
-    this.http.post<UserModel[]>("Users/GetAll", {}, (res) => {
+  getAll(){
+    this.http.post<UserModel[]>("Users/GetAll",{},(res)=> {
       this.users = res;
     });
   }
 
-  create(form: NgForm) {
-    if (form.valid) {
-      this.http.post<string>("Users/Create", this.createModel, (res) => {
+  create(form: NgForm){
+    if(form.valid){
+      this.http.post<string>("Users/Create",this.createModel,(res)=> {
         this.swal.callToast(res);
         this.createModel = new UserModel();
         this.createModalCloseBtn?.nativeElement.click();
@@ -49,24 +49,25 @@ export class UsersComponent {
     }
   }
 
-  deleteById(model: UserModel) {
-    this.swal.callSwal("Delete user?", `Are you sure you want to delete ${model.fullName}?`, () => {
-      this.http.post<string>("Users/DeleteById", { id: model.id }, (res) => {
+  deleteById(model: UserModel){
+    this.swal.callSwal("Kullanıcıyı Sil?",`${model.fullName} kullanıcısını silmek istiyor musunuz?`,()=> {
+      this.http.post<string>("Users/DeleteById",{id: model.id},(res)=> {
         this.getAll();
-        this.swal.callToast(res, "info");
+        this.swal.callToast(res,"info");
       });
-    });
+    })
   }
 
-  get(model: UserModel) {
-    this.updateModel = { ...model };
+  get(model: UserModel){
+    this.updateModel = {...model};
   }
 
-  update(form: NgForm) {
-    if (form.valid) {
-      if (this.updateModel.password === "") this.updateModel.password = null
-      this.http.post<string>("Users/Update", this.updateModel, (res) => {
-        this.swal.callToast(res, "info");
+  update(form: NgForm){
+    if(form.valid){
+      if(this.updateModel.password === "") this.updateModel.password = null;
+      
+      this.http.post<string>("Users/Update",this.updateModel,(res)=> {
+        this.swal.callToast(res,"info");
         this.updateModalCloseBtn?.nativeElement.click();
         this.getAll();
       });

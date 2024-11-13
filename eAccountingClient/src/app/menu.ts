@@ -8,12 +8,12 @@ export class MenuModel{
 
 export const Menus: MenuModel[] = [
     {
-        name: "Home Page",
+        name: "Ana Sayfa",
         icon: "fa-solid fa-home",
         url: "/",
         isTitle: false,
         subMenus: []
-    },
+    },   
     {
         name: "Admin",
         icon: "",
@@ -22,10 +22,11 @@ export const Menus: MenuModel[] = [
         subMenus: []
     },
     {
-        name: "Users",
+        name: "Kullanıcılar",
         icon: "fa-solid fa-users",
         url: "/users",
         isTitle: false,
-        subMenus: []
+        subMenus:[]
     },
+   
 ]

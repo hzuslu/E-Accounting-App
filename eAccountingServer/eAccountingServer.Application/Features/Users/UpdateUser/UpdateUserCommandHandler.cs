@@ -46,7 +46,7 @@ namespace eAccountingServer.Application.Features.Users.UpdateUser
             if (!updateResult.Succeeded)
                 return Result<string>.Failure(updateResult.Errors.Select(e => e.Description).ToList());
 
-            if(request.Password is not null)
+            if (request.Password is not null)
             {
                 string resetToken = await userManager.GeneratePasswordResetTokenAsync(appUser);
                 var resetResult = await userManager.ResetPasswordAsync(appUser, resetToken, request.Password);

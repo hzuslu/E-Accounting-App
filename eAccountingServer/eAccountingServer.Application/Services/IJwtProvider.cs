@@ -1,10 +1,8 @@
-﻿using eAccountingServer.Application.Features.Auth.Login;
-using eAccountingServer.Domain.Entities;
+﻿using eAccountingServer.Domain.Entities;
+using eMuhasebeServer.Application.Features.Auth.Login;
 
-namespace eAccountingServer.Application.Services
+namespace eMuhasebeServer.Application.Services;
+public interface IJwtProvider
 {
-    public interface IJwtProvider
-    {
-        Task<LoginCommandResponse> CreateToken(AppUser user);
-    }
+    Task<LoginCommandResponse> CreateToken(AppUser user);
 }

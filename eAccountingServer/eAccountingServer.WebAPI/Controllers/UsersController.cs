@@ -4,7 +4,6 @@ using eAccountingServer.Application.Features.Users.GetAllUsers;
 using eAccountingServer.Application.Features.Users.UpdateUser;
 using eAccountingServer.WebAPI.Abstractions;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eAccountingServer.WebAPI.Controllers
@@ -16,7 +15,7 @@ namespace eAccountingServer.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetAll(GetAllUsersQuery request , CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAll(GetAllUsersQuery request, CancellationToken cancellationToken)
         {
             var response = await _mediator.Send(request, cancellationToken);
             return StatusCode(response.StatusCode, response);

@@ -1,5 +1,5 @@
-﻿using eAccountingServer.Application.Features.Auth.Login;
-using eAccountingServer.WebAPI.Abstractions;
+﻿using eAccountingServer.WebAPI.Abstractions;
+using eMuhasebeServer.Application.Features.Auth.Login;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
